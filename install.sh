@@ -13,7 +13,7 @@ cd /tmp && \
 
 echo "OK"
 echo -e '\n'
-echo "Steps manually:"
+echo "Manual steps:"
 echo "- export POKE_URL=\"https://server\""
 echo "- export PATH=\"\$HOME/poke:\$PATH\""
 echo -e '\n'
