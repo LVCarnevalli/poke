@@ -18,13 +18,8 @@ args = parser.parse_args()
 
 first = False
 storage = os.path.expanduser('~') + '/poke/data.json'
-if not os.path.exists(os.path.dirname(storage)):
+if not os.path.isfile(storage):
     first = True
-    try:
-        os.makedirs(os.path.dirname(storage))
-    except OSError as exc: 
-        if exc.errno != errno.EEXIST:
-            raise
 
 db = TinyDB(storage)
 config = db.table('config')

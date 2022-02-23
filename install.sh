@@ -8,8 +8,10 @@ cd /tmp && \
     cd poke-main && \
     pip3 install -r requirements.txt && \
     mkdir -p $HOME/poke && \
-    cp -rf poke.sh $HOME/poke && \
-    cp -rf poke.py $HOME/poke
+    cp -rf poke.py $HOME/poke && \
+    cp -rf poke.sh $HOME/poke/poke && \
+    chmod 755 $HOME/poke/poke && \
+    chmod +x $HOME/poke/poke
 
 echo "OK"
 echo -e '\n'
