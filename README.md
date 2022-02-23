@@ -11,4 +11,5 @@ $ python3 poke.py --listen
 Install:
 ```
 $ curl -o- https://raw.githubusercontent.com/LVCarnevalli/poke/main/install.sh | bash
+$ poke
 ```
