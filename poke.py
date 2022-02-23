@@ -7,11 +7,13 @@ import argparse
 import json
 import platform
 system = platform.system().lower()
+from os import environ
+env_dict = dict(environ)
 
 parser = argparse.ArgumentParser("poke")
 parser.add_argument("--add_user", help="")
 parser.add_argument("--poke", help="")
-parser.add_argument("--listen", help="", default=False, action=argparse.BooleanOptionalAction)
+parser.add_argument("--listen", help="", default=False, action='store_true')
 args = parser.parse_args()
 
 first = False
@@ -32,7 +34,7 @@ def get_config(key):
     return config.search(Query().key == key)[0]['value']
 
 if first:
-    response = requests.post('http://localhost:3000/user')
+    response = requests.post('%s/user' %(env_dict["POKE_URL"],))
     if not response.ok:
         raise Exception('Error')
     hash = response.json()['hash']
@@ -52,7 +54,7 @@ if args.add_user:
 
 if args.poke:
     user_found = users.search(Query().alias == args.poke)
-    response = requests.post('http://localhost:3000/poke', data=json.dumps({
+    response = requests.post('%s/poke' %(env_dict["POKE_URL"],), data=json.dumps({
         "from_hash": get_config('hash'),
         "to_hash":  user_found[0]['hash']
     }), headers={'content-type':'application/json'})
@@ -63,7 +65,7 @@ if args.poke:
 if args.listen:
     while (get_config('pause') == "false"):
         try:
-            response = requests.get('http://localhost:3000/action?to_hash=%s&created_at=%s' %(get_config('hash'),get_config('date_listen'),))
+            response = requests.get('%s/action?to_hash=%s&created_at=%s' %(env_dict["POKE_URL"],get_config('hash'),get_config('date_listen'),))
             if not response.ok:
                 raise Exception('Error')
             config.update({'key': 'date_listen', 'value': datetime.now(timezone.utc).strftime('%Y-%m-%dT%H:%M:%S.%fZ')}, Query().key == 'date_listen')
@@ -75,7 +77,7 @@ if args.listen:
                 else:
                     from_name = from_hash
                 if system == 'linux':
-                    print("poke")
+                    os.system(f'notify-send "{from_name} poke you!"')
                 else:    
                     os.system(f'osascript -e \'display notification "{from_name} poke you!"\'')
 
