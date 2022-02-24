@@ -15,11 +15,7 @@ parser.add_argument("--user", help="Alias of user.")
 parser.add_argument("--listen", help="", default=False, action='store_true')
 args = parser.parse_args()
 
-first = False
 storage = os.path.expanduser('~') + '/poke/data.json'
-if not os.path.isfile(storage):
-    first = True
-
 db = TinyDB(storage)
 config = db.table('config')
 users = db.table('users')
@@ -29,11 +25,10 @@ def get_config(key):
 
 if args.poke_url:
     poke_url = args.poke_url
-    config.insert({'key': 'poke_url', 'value': poke_url})
 else:
     poke_url = get_config('poke_url')
 
-if first:
+if not config.search(Query().key == "first_app"):
     response = requests.post('%s/user' %(poke_url,))
     if not response.ok:
         raise Exception('Error')
@@ -42,6 +37,8 @@ if first:
     config.insert({'key': 'date_listen', 'value': ''})
     config.insert({'key': 'pause', 'value': 'false'})
     config.insert({'key': 'hash', 'value': hash})
+    config.insert({'key': 'poke_url', 'value': poke_url})
+    config.insert({'key': 'first_app', 'value': 'false'})
 
     print('Share this hash with your friends: %s' %(hash,))
 
