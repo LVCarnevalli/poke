@@ -7,12 +7,11 @@ import argparse
 import json
 import platform
 system = platform.system().lower()
-from os import environ
-env_dict = dict(environ)
 
 parser = argparse.ArgumentParser("poke")
-parser.add_argument("--add_user", help="")
-parser.add_argument("--poke", help="")
+parser.add_argument("--add_user", help="Add user with token and alias.")
+parser.add_argument("--poke_url", help="Url poke server.")
+parser.add_argument("--user", help="Alias of user.")
 parser.add_argument("--listen", help="", default=False, action='store_true')
 args = parser.parse_args()
 
@@ -28,8 +27,14 @@ users = db.table('users')
 def get_config(key):
     return config.search(Query().key == key)[0]['value']
 
+if args.poke_url:
+    poke_url = args.poke_url
+    config.insert({'key': 'poke_url', 'value': poke_url})
+else:
+    poke_url = get_config('poke_url')
+
 if first:
-    response = requests.post('%s/user' %(env_dict["POKE_URL"],))
+    response = requests.post('%s/user' %(poke_url,))
     if not response.ok:
         raise Exception('Error')
     hash = response.json()['hash']
@@ -47,9 +52,9 @@ if args.add_user:
     })
     print('User added successfully.')
 
-if args.poke:
-    user_found = users.search(Query().alias == args.poke)
-    response = requests.post('%s/poke' %(env_dict["POKE_URL"],), data=json.dumps({
+if args.user:
+    user_found = users.search(Query().alias == args.user)
+    response = requests.post('%s/poke' %(poke_url,), data=json.dumps({
         "from_hash": get_config('hash'),
         "to_hash":  user_found[0]['hash']
     }), headers={'content-type':'application/json'})
@@ -60,7 +65,7 @@ if args.poke:
 if args.listen:
     while (get_config('pause') == "false"):
         try:
-            response = requests.get('%s/action?to_hash=%s&created_at=%s' %(env_dict["POKE_URL"],get_config('hash'),get_config('date_listen'),))
+            response = requests.get('%s/action?to_hash=%s&created_at=%s' %(poke_url,get_config('hash'),get_config('date_listen'),))
             if not response.ok:
                 raise Exception('Error')
             config.update({'key': 'date_listen', 'value': datetime.now(timezone.utc).strftime('%Y-%m-%dT%H:%M:%S.%fZ')}, Query().key == 'date_listen')

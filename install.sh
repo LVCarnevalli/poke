@@ -13,9 +13,18 @@ cd /tmp && \
     chmod 755 $HOME/poke/poke && \
     chmod +x $HOME/poke/poke
 
+if [ "$(uname)" == "Darwin" ]; then
+    PYTHON3=$(which python3)
+    cat github.poke.plist | \
+        sed -e "s|{HOME}|$HOME|g" | \
+        sed -e "s|{PYTHON3}|$PYTHON3|g" \
+        > ~/Library/LaunchAgents/github.poke.plist && \
+        launchctl unload ~/Library/LaunchAgents/github.poke.plist && \
+        launchctl load ~/Library/LaunchAgents/github.poke.plist
+fi
+
 echo "OK"
 echo -e '\n'
 echo "Manual steps:"
-echo "- export POKE_URL=\"https://server\""
 echo "- export PATH=\"\$HOME/poke:\$PATH\""
 echo -e '\n'
