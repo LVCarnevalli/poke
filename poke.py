@@ -69,7 +69,7 @@ if args.listen:
             for action in response.json():
                 from_hash = action['from_hash']
                 user_found = users.search(Query().hash == from_hash)
-                if len(user_found) > 0:
+                if user_found:
                     from_name = user_found[0]['alias']
                 else:
                     from_name = from_hash
