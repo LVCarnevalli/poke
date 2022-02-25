@@ -10,6 +10,7 @@ system = platform.system().lower()
 
 parser = argparse.ArgumentParser("poke")
 parser.add_argument("--add_user", help="Add user with token and alias.")
+parser.add_argument("--get_users", help="Get all users.", default=False, action='store_true')
 parser.add_argument("--poke_url", help="Url poke server.")
 parser.add_argument("--user", help="Alias of user.")
 parser.add_argument("--listen", help="", default=False, action='store_true')
@@ -41,6 +42,9 @@ if not config.search(Query().key == "first_app"):
     config.insert({'key': 'first_app', 'value': 'false'})
 
     print('Share this hash with your friends: %s' %(hash,))
+
+if args.get_users:
+    print(users.all())
 
 if args.add_user:
     add_user = args.add_user.split("=")
