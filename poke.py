@@ -78,7 +78,7 @@ if args.listen:
                     if system == 'linux':
                         os.system(f'notify-send "{from_name} poke you!"')
                     else:
-                        os.system(f'osascript -e \'display notification "{from_name} poke you!" with title "Poke"\'')
+                        os.system(f'osascript -e \'display notification "{from_name} poke you!" with title "Poke" sound name "default"\'')
 
         except Exception as er:
             print(er)
