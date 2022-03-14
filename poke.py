@@ -75,12 +75,10 @@ if args.listen:
                 user_found = users.search(Query().hash == from_hash)
                 if user_found:
                     from_name = user_found[0]['alias']
-                else:
-                    from_name = from_hash
-                if system == 'linux':
-                    os.system(f'notify-send "{from_name} poke you!"')
-                else:    
-                    os.system(f'osascript -e \'display notification "{from_name} poke you!"\'')
+                    if system == 'linux':
+                        os.system(f'notify-send "{from_name} poke you!"')
+                    else:
+                        os.system(f'osascript -e \'display notification "{from_name} poke you!" with title "Poke"\'')
 
         except Exception as er:
             print(er)

@@ -20,7 +20,7 @@ if [ "$(uname)" == "Darwin" ]; then
         sed -e "s|{PYTHON3}|$PYTHON3|g" \
         > ~/Library/LaunchAgents/github.poke.plist && \
         launchctl unload ~/Library/LaunchAgents/github.poke.plist && \
-        launchctl load ~/Library/LaunchAgents/github.poke.plist
+        launchctl load -w ~/Library/LaunchAgents/github.poke.plist
 fi
 
 echo "OK"
