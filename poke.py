@@ -36,7 +36,6 @@ if not config.search(Query().key == "first_app"):
     hash = response.json()['hash']
 
     config.insert({'key': 'date_listen', 'value': ''})
-    config.insert({'key': 'pause', 'value': 'false'})
     config.insert({'key': 'hash', 'value': hash})
     config.insert({'key': 'poke_url', 'value': poke_url})
     config.insert({'key': 'first_app', 'value': 'false'})
@@ -64,7 +63,7 @@ if args.user:
     print('User poke successfully.')
 
 if args.listen:
-    while (get_config('pause') == "false"):
+    while (true):
         try:
             response = requests.get('%s/action?to_hash=%s&created_at=%s' %(poke_url,get_config('hash'),get_config('date_listen'),))
             if not response.ok:
