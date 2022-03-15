@@ -63,7 +63,7 @@ if args.user:
     print('User poke successfully.')
 
 if args.listen:
-    while (true):
+    while (True):
         try:
             response = requests.get('%s/action?to_hash=%s&created_at=%s' %(poke_url,get_config('hash'),get_config('date_listen'),))
             if not response.ok:
